@@ -1,43 +1,21 @@
-name: Apigee Proxy Deployment
+name: Form Submission Workflow
 
 on:
-  push:
-    branches:
-      - master
+  repository_dispatch:
+    types:
+      - form_submission
 
 jobs:
-  deploy_proxy:
-    name: Deploy Proxy
+  print_form_data:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Java and Maven
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-
-      - name: Extract Form Data
-        id: extract-data
+      - name: Print Form Data
         run: |
-          # Extract form data from the trigger payload
-          PROXY_NAME=$(echo "$GITHUB_EVENT_PATH" | jq -r '.workflow_run.inputs.ProxyName')
-          BASE_PATH=$(echo "$GITHUB_EVENT_PATH" | jq -r '.workflow_run.inputs.BasePath')
-          URL=$(echo "$GITHUB_EVENT_PATH" | jq -r '.workflow_run.inputs.Url')
-          echo "::set-env name=PROXY_NAME::$PROXY_NAME"
-          echo "::set-env name=BASE_PATH::$BASE_PATH"
-          echo "::set-env name=URL::$URL"
-        
-      - name: Build and Deploy Proxy
-        env:
-          PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
-          PROXY_PASSWORD: ${{ secrets.PROXY_PASSWORD }}
-          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
-          PROXY_NAME: ${{ env.PROXY_NAME }}
-          BASE_PATH: ${{ env.BASE_PATH }}
-          URL: ${{ env.URL }}
-        run: |
-          mvn -f pom.xml install -Ptest -Dusername="$PROXY_USERNAME" -Dpassword="$PROXY_PASSWORD" -Dproxyname="$PROXY_NAME" -Denvironment="$ENVIRONMENT" -DBasePath="$BASE_PATH" -DUrl="$URL"
+          echo "Received form submission:"
+          echo "Proxy Name: ${{ github.event.client_payload.ProxyName }}"
+          echo "Base Path: ${{ github.event.client_payload.BasePath }}"
+          echo "URL: ${{ github.event.client_payload.Url }}"
