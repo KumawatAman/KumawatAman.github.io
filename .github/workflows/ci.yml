@@ -1,0 +1,20 @@
+name: Form Submission
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  process_form:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Process form data
+        run: |
+          echo "Proxy Name: ${{ github.event.inputs.ProxyName }}"
+          echo "Base Path: ${{ github.event.inputs.BasePath }}"
+          echo "URL: ${{ github.event.inputs.Url }}"
