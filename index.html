@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Proxy Details</title>
+    <title>HTML Form</title>
 </head>
 <body>
-    <h1>Enter Details</h1>
+    <h1>Enter Proxy Details</h1>
     
-    <form action="#" method="post">
+    <form action="#" method="post" onsubmit="submitForm(event)">
         <label for="ProxyName">Proxy Name:</label>
         <input type="text" id="ProxyName" name="ProxyName" required><br><br>
         
@@ -18,5 +18,34 @@
         
         <input type="submit" value="Submit">
     </form>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            const proxyName = formData.get('ProxyName');
+            const basePath = formData.get('BasePath');
+            const url = formData.get('Url');
+
+            // Send the form data to your workflow using an API request (e.g., fetch)
+            fetch('/workflow-trigger', {
+                method: 'POST',
+                body: JSON.stringify({ proxyName, basePath, url }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Handle success
+                    console.log('Form data sent successfully');
+                } else {
+                    // Handle error
+                    console.error('Error sending form data');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
