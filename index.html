@@ -20,32 +20,40 @@
     </form>
 
     <script>
-        function submitForm(event) {
-            event.preventDefault();
+  function submitForm(e) {
+    e.preventDefault(); // Prevent the default form submission
 
-            const formData = new FormData(event.target);
+    const formData = new FormData(e.target); // Get form data
+    const url = 'https://api.github.com/repos/KumawatAman/KumawatAman.github.io/dispatches'; // Replace with your repository and event name
 
-            const proxyName = formData.get('ProxyName');
-            const basePath = formData.get('BasePath');
-            const url = formData.get('Url');
-
-            // Send the form data to your workflow using an API request (e.g., fetch)
-            fetch('/workflow-trigger', {
-                method: 'POST',
-                body: JSON.stringify({ proxyName, basePath, url }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    // Handle success
-                    console.log('Form data sent successfully');
-                } else {
-                    // Handle error
-                    console.error('Error sending form data');
-                }
-            });
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': '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' // Replace with your GitHub token
+      },
+      body: JSON.stringify({
+        event_type: 'form_submission',
+        client_payload: {
+          ProxyName: formData.get('ProxyName'),
+          BasePath: formData.get('BasePath'),
+          Url: formData.get('Url')
         }
-    </script>
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Form submitted successfully!'); // Display a success message
+      } else {
+        alert('Form submission failed. Please try again.'); // Display an error message
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Form submission failed. Please try again.');
+    });
+  }
+</script>
+
 </body>
 </html>
