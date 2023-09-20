@@ -14,22 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Process form data
-        run: |
-          echo "Proxy Name: ${{ github.event.inputs.ProxyName }}"
-          echo "Base Path: ${{ github.event.inputs.BasePath }}"
-          echo "URL: ${{ github.event.inputs.Url }}"
       - name: Set up Java and Maven
         uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
 
-      # - name: Build and Deploy Proxy
-      #   env:
-      #     PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
-      #     PROXY_PASSWORD: ${{ secrets.PROXY_PASSWORD }}
-      #     PROXY_NAME: ${{ secrets.PROXY_NAME }}
-      #     ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
-      #   run: |
-      #     mvn -f pom.xml install -Ptest -Dusername="$PROXY_USERNAME" -Dpassword="$PROXY_PASSWORD" -Dproxyname="$PROXY_NAME" -Denvironment="$ENVIRONMENT"
+      - name: Extract Form Data
+        id: extract-data
+        run: |
+          # Extract form data from the trigger payload
+          PROXY_NAME=$(echo "$GITHUB_EVENT_PATH" | jq -r '.workflow_run.inputs.ProxyName')
+          BASE_PATH=$(echo "$GITHUB_EVENT_PATH" | jq -r '.workflow_run.inputs.BasePath')
+          URL=$(echo "$GITHUB_EVENT_PATH" | jq -r '.workflow_run.inputs.Url')
+          echo "::set-env name=PROXY_NAME::$PROXY_NAME"
+          echo "::set-env name=BASE_PATH::$BASE_PATH"
+          echo "::set-env name=URL::$URL"
+        
+      - name: Build and Deploy Proxy
+        env:
+          PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
+          PROXY_PASSWORD: ${{ secrets.PROXY_PASSWORD }}
+          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+          PROXY_NAME: ${{ env.PROXY_NAME }}
+          BASE_PATH: ${{ env.BASE_PATH }}
+          URL: ${{ env.URL }}
+        run: |
+          mvn -f pom.xml install -Ptest -Dusername="$PROXY_USERNAME" -Dpassword="$PROXY_PASSWORD" -Dproxyname="$PROXY_NAME" -Denvironment="$ENVIRONMENT" -DBasePath="$BASE_PATH" -DUrl="$URL"
