@@ -6,7 +6,7 @@
 <body>
     <h1>GitHub Actions Form</h1>
     
-    <form action="#" method="post" onsubmit="submitForm(event)">
+    <form action="#" method="post" id="loginForm">
         <label for="ProxyName">Proxy Name:</label>
         <input type="text" id="ProxyName" name="ProxyName" required><br><br>
         
@@ -19,41 +19,31 @@
         <input type="submit" value="Submit">
     </form>
 
-    <script>
-        function submitForm(e) {
-            e.preventDefault(); // Prevent the default form submission
+<script>
+    let loginForm = document.getElementById("loginForm");
 
-            const formData = new FormData(e.target); // Get form data
-            const apiUrl = 'https://api.github.com/repos/KumawatAman/KumawatAman.github.io/dispatches'; // Replace with your repository's API URL
-            const authToken = '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'; // Replace with your GitHub personal access token
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({
-                    event_type: 'form_submission',
-                    client_payload: {
-                        ProxyName: formData.get('ProxyName'),
-                        BasePath: formData.get('BasePath'),
-                        Url: formData.get('Url')
-                    }
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Form submitted successfully!'); // Display a success message
-                } else {
-                    alert('Form submission failed. Please try again.'); // Display an error message
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Form submission failed. Please try again.');
-            });
-        }
-    </script>
+  let ProxyName = document.getElementById("ProxyName");
+  let BasePath = document.getElementById("BasePath");
+  let Url = document.getElementById("Url");
+
+  if (ProxyName.value == "" || BasePath.value == "" || Url.value == "") {
+    alert("Ensure you input a value in every fields!");
+  } else {
+    // perform operation with form input
+    alert("This form has been successfully submitted!");
+    console.log(
+      `This form has a username of ${ProxyName.value} and ${Url.value} , ${BasePath.value}`
+    );
+
+    username.value = "";
+    password.value = "";
+  }
+});
+</script>
+
+   
 </body>
 </html>
