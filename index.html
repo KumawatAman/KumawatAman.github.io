@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>HTML Form</title>
+    <title>GitHub Actions Form</title>
 </head>
 <body>
-    <h1>Enter Proxy Details</h1>
+    <h1>GitHub Actions Form</h1>
     
     <form action="#" method="post" onsubmit="submitForm(event)">
         <label for="ProxyName">Proxy Name:</label>
@@ -20,40 +20,40 @@
     </form>
 
     <script>
-  function submitForm(e) {
-    e.preventDefault(); // Prevent the default form submission
+        function submitForm(e) {
+            e.preventDefault(); // Prevent the default form submission
 
-    const formData = new FormData(e.target); // Get form data
-    const url = 'https://api.github.com/repos/KumawatAman/KumawatAman.github.io/actions/workflows/70017222/dispatches'; // Replace with your repository and event name
+            const formData = new FormData(e.target); // Get form data
+            const apiUrl = 'https://api.github.com/repos/KumawatAman/KumawatAman.github.io/dispatches'; // Replace with your repository's API URL
+            const authToken = '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'; // Replace with your GitHub personal access token
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': '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' // Replace with your GitHub token
-      },
-      body: JSON.stringify({
-        event_type: 'form_submission',
-        client_payload: {
-          ProxyName: formData.get('ProxyName'),
-          BasePath: formData.get('BasePath'),
-          Url: formData.get('Url')
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({
+                    event_type: 'form_submission',
+                    client_payload: {
+                        ProxyName: formData.get('ProxyName'),
+                        BasePath: formData.get('BasePath'),
+                        Url: formData.get('Url')
+                    }
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Form submitted successfully!'); // Display a success message
+                } else {
+                    alert('Form submission failed. Please try again.'); // Display an error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Form submission failed. Please try again.');
+            });
         }
-      })
-    })
-    .then(response => {
-      if (response.ok) {
-        alert('Form submitted successfully!'); // Display a success message
-      } else {
-        alert('Form submission failed. Please try again.'); // Display an error message
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Form submission failed. Please try again.');
-    });
-  }
-</script>
-
+    </script>
 </body>
 </html>
