@@ -1,21 +1,19 @@
-name: Form Submission Workflow
+name: Form Submission
 
 on:
   repository_dispatch:
-    types:
-      - form_submission
+    types: [form_submission]
 
 jobs:
-  print_form_data:
+  process_form:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Print Form Data
+      - name: Print form data
         run: |
-          echo "Received form submission:"
           echo "Proxy Name: ${{ github.event.client_payload.ProxyName }}"
           echo "Base Path: ${{ github.event.client_payload.BasePath }}"
           echo "URL: ${{ github.event.client_payload.Url }}"
