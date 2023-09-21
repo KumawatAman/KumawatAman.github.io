@@ -6,7 +6,7 @@
 <body>
     <h1>GitHub Actions Form</h1>
     
-    <form action="#" method="post" id="loginForm">
+    <form action="https://api.github.com/repos/KumawatAman/KumawatAman.github.io/dispatches" method="post" id="loginForm">
         <label for="ProxyName">Proxy Name:</label>
         <input type="text" id="ProxyName" name="ProxyName" required><br><br>
         
@@ -25,23 +25,45 @@
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  let ProxyName = document.getElementById("ProxyName");
-  let BasePath = document.getElementById("BasePath");
-  let Url = document.getElementById("Url");
+  let ProxyName = document.getElementById("ProxyName").value;
+  let BasePath = document.getElementById("BasePath").value;
+  let Url = document.getElementById("Url").value;
 
-  if (ProxyName.value == "" || BasePath.value == "" || Url.value == "") {
-    alert("Ensure you input a value in every fields!");
+  if (ProxyName == "" || BasePath == "" || Url == "") {
+    alert("Ensure you input a value in every field!");
   } else {
-    // perform operation with form input
-    alert("This form has been successfully submitted!");
-    console.log(
-      `This form has a username of ${ProxyName.value} and ${Url.value} , ${BasePath.value}`
-    );
+    const apiUrl = "https://api.github.com/repos/KumawatAman/KumawatAman.github.io/dispatches"; // Replace with your GitHub repository's API URL
+    const authToken = "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"; // Replace with your GitHub personal access token
 
-    username.value = "";
-    password.value = "";
+    fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({
+        event_type: "form_submission",
+        client_payload: {
+          ProxyName: ProxyName,
+          BasePath: BasePath,
+          Url: Url,
+        },
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert("Form submitted successfully!");
+        } else {
+          alert("Form submission failed. Please try again.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Form submission failed. Please try again.");
+      });
   }
 });
+
 </script>
 
    
